@@ -1,0 +1,31 @@
+appId: com.scottweaver.claptrap
+productName: Claptrap
+# Reuse the Electron binary npm already installed instead of downloading another copy.
+electronDist: node_modules/electron/dist
+# No native modules need rebuilding: on macOS get-windows uses its prebuilt Swift binary.
+npmRebuild: false
+directories:
+  output: dist
+  buildResources: build
+files:
+  - out/**
+  - package.json
+extraResources:
+  - from: resources
+    to: resources
+asarUnpack:
+  # get-windows shells out to a prebuilt Swift binary; it can't run from inside the asar.
+  - node_modules/get-windows/**
+mac:
+  target:
+    - target: dir
+  category: public.app-category.productivity
+  icon: build/icon.icns
+  # Ad-hoc signature. With a real "Apple Development" certificate installed, set
+  # identity to its name so macOS permissions survive rebuilds.
+  identity: "-"
+  hardenedRuntime: false
+  extendInfo:
+    LSUIElement: true
+    NSScreenCaptureUsageDescription: Claptrap takes periodic screenshots so it can write down what you're working on.
+    NSAppleEventsUsageDescription: Claptrap reads the current browser tab's URL to make its notes more specific.
