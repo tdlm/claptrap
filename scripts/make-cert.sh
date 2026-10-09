@@ -31,8 +31,11 @@ EOF
 openssl req -x509 -newkey rsa:2048 -nodes -days 3650 \
   -config "$work/cert.cnf" -keyout "$work/key.pem" -out "$work/cert.pem" 2>/dev/null
 # The .p12 password only protects this temp file, which is deleted on exit.
+# OpenSSL 3 defaults to AES/PBKDF2 with a SHA-256 MAC, which `security import` can't
+# read ("MAC verification failed"), so force the legacy 3DES/SHA-1 format.
 openssl pkcs12 -export -inkey "$work/key.pem" -in "$work/cert.pem" \
-  -name "$NAME" -out "$work/cert.p12" -passout pass:claptrap
+  -name "$NAME" -out "$work/cert.p12" -passout pass:claptrap \
+  -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -macalg sha1
 
 security import "$work/cert.p12" -k "$KEYCHAIN" -P claptrap -T /usr/bin/codesign
 echo "macOS will ask for your login password to trust the certificate for code signing…"
