@@ -1,0 +1,7 @@
+allowBuilds:
+  # Windows-only installer helper; never used for the macOS build.
+  electron-winstaller: false
+  # Postinstall sets up the native esbuild binary that electron-vite builds with.
+  esbuild: true
+  # Install script builds the Windows addon; macOS uses the prebuilt `main` binary it ships.
+  get-windows: false

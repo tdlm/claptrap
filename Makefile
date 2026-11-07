@@ -18,26 +18,26 @@ help: ## List the available commands
 
 # ---- development --------------------------------------------------------------
 
-setup: ## Install npm packages and the Electron binary
-	npm install
+setup: ## Install packages (pnpm) and the Electron binary
+	pnpm install
 	@test -d node_modules/electron/dist || node node_modules/electron/install.js
 
 dev: ## Run with hot reload (permissions go to your terminal, not Claptrap)
-	npm run dev
+	pnpm dev
 
 typecheck: ## Type-check main, preload and renderer
-	npm run typecheck
+	pnpm typecheck
 
 build: ## Bundle the app code into out/
-	npm run build
+	pnpm build
 
 icons: ## Regenerate the tray icons and app icon
-	npm run icons
+	pnpm icons
 
 # ---- packaging -------------------------------------------------------------------
 
 dist: ## Package Claptrap.app into dist/ and sign it
-	npm run dist
+	pnpm dist
 	@$(MAKE) --no-print-directory sign
 
 sign: ## Re-sign the built app (stable certificate if present, else ad-hoc)

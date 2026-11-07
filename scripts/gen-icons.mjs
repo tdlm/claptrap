@@ -1,5 +1,5 @@
 // Generates the menu bar template icons (resources/) and the app icon (build/icon.png)
-// with a tiny dependency-free rasterizer. Run: npm run icons
+// with a tiny dependency-free rasterizer. Run: pnpm icons
 import fs from 'node:fs'
 import path from 'node:path'
 import zlib from 'node:zlib'

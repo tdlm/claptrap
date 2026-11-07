@@ -4,6 +4,13 @@ Every change to Claptrap's requirements, newest first. The current full prompt l
 [PROMPT.md](PROMPT.md). Each entry records what was asked and what changed in the prompt,
 so any revision can be reconstructed.
 
+## Rev 10 — 2026-11-07 — pnpm
+
+- Asked: "fix the pnpm allowBuilds and commit it", then chose a full switch to pnpm.
+- Changed: the project installs with pnpm (`packageManager` pinned, `pnpm-lock.yaml`
+  replaces `package-lock.json`); `allowBuilds` allows only esbuild's install script; the
+  Makefile, scripts and docs use `pnpm` commands.
+
 ## Rev 9 — 2026-11-07 — Encrypted spool, retries and a regular-request fallback
 
 - Asked: "I'd rather not lose captures. I want this thing to be robust and recover from

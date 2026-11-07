@@ -7,13 +7,14 @@
   "author": "Scott Weaver",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@12.15.0",
   "scripts": {
     "icons": "node scripts/gen-icons.mjs",
     "dev": "electron-vite dev",
     "build": "electron-vite build",
     "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
     "start": "electron-vite preview",
-    "dist": "npm run icons && electron-vite build && electron-builder --mac"
+    "dist": "pnpm icons && electron-vite build && electron-builder --mac"
   },
   "dependencies": {
     "@ai-sdk/gateway": "^4.0.107",

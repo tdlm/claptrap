@@ -40,7 +40,7 @@ export interface PermissionState {
   accessibility: boolean
   /** Screen Recording was granted after launch; macOS only applies it after a relaunch. */
   needsRelaunch: boolean
-  /** Running via `npm run dev`: macOS attributes permissions to the launching app, not Claptrap. */
+  /** Running via `pnpm dev`: macOS attributes permissions to the launching app, not Claptrap. */
   isDev: boolean
 }
 

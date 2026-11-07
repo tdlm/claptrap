@@ -20,7 +20,7 @@ make setup
 make dev
 ```
 
-`make setup` installs the npm packages and fetches the Electron binary.
+`make setup` installs the packages with [pnpm](https://pnpm.io) and fetches the Electron binary.
 
 On first launch, Claptrap opens its permissions window and then Settings → **Brain**,
 where you paste an API key for your provider.
@@ -56,7 +56,7 @@ Gotchas:
 
 - **Screen Recording needs a relaunch** after you grant it. The permissions window
   shows a Relaunch button when that's the case.
-- **In `npm run dev`**, macOS gives the permission to whatever launched Electron
+- **In `pnpm dev`**, macOS gives the permission to whatever launched Electron
   (your terminal, or "Electron"), not to "Claptrap". Grant it there for development.
 - **Ad-hoc signed builds lose their grants on every rebuild**, because macOS ties
   permissions to the code signature. `make cert` fixes this for good. Otherwise, run

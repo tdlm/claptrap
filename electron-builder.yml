@@ -1,6 +1,6 @@
 appId: com.scottweaver.claptrap
 productName: Claptrap
-# Reuse the Electron binary npm already installed instead of downloading another copy.
+# Reuse the Electron binary pnpm already installed instead of downloading another copy.
 electronDist: node_modules/electron/dist
 # No native modules need rebuilding: on macOS get-windows uses its prebuilt Swift binary.
 npmRebuild: false

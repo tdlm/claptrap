@@ -73,9 +73,9 @@ export function Permissions() {
         {!screenOk &&
           (perms.isDev ? (
             <p className="hint">
-              <b>Dev mode:</b> macOS credits whichever app launched <code>npm run dev</code> (your terminal, or
+              <b>Dev mode:</b> macOS credits whichever app launched <code>pnpm dev</code> (your terminal, or
               "Electron"), so switch <b>that</b> on under Privacy &amp; Security → Screen &amp; System Audio Recording,
-              then restart <code>npm run dev</code>. The packaged app shows up as <b>Claptrap</b>.
+              then restart <code>pnpm dev</code>. The packaged app shows up as <b>Claptrap</b>.
             </p>
           ) : (
             <p className="hint">
