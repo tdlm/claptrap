@@ -17,15 +17,15 @@
     "dist": "pnpm icons && electron-vite build && electron-builder --mac"
   },
   "dependencies": {
-    "@ai-sdk/gateway": "^4.0.107",
-    "@anthropic-ai/sdk": "^0.132.0",
-    "ai": "^7.0.131",
+    "@ai-sdk/gateway": "^4.0.111",
+    "@anthropic-ai/sdk": "^0.133.0",
+    "ai": "^7.0.138",
     "get-windows": "^9.3.0",
-    "zod": "^4.6.5"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@fontsource/bangers": "^5.3.0",
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^5.2.0",
@@ -34,7 +34,7 @@
     "electron-vite": "^5.0.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "typescript": "^5.9.0",
+    "typescript": "^7.0.2",
     "vite": "^7.0.0"
   }
 }
