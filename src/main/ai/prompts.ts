@@ -17,7 +17,7 @@ Fields:
 - activity: one line, at most 120 characters, present tense, no subject. Name the concrete thing being worked on when it is visible: the file, document, page, ticket, PR, channel, or meeting. Example: "Reviewing PR #482 'Fix token refresh' on GitHub".
 - details: at most 200 characters of extra context that would help when rereading the log later (topic, people, what changed). Use an empty string when there is nothing useful to add.
 - app: the application in use.
-- category: the closest match.
+- category: the closest match, exactly one of: ${CATEGORIES.join(', ')}.
 - same_as_previous: true only when the user is clearly still on the same task with the same object as in the previous screenshot (see the metadata).
 
 Respond with only a JSON object with exactly these keys: activity, app, details, category, same_as_previous.
@@ -58,17 +58,29 @@ export function captureContext(c: CaptureContext): string {
   return lines.join('\n')
 }
 
-/** Parses a capture reply; tolerant of stray text around the JSON object. */
-export function parseAnalysis(text: string): Analysis | null {
+/**
+ * Parses a capture reply; tolerant of stray text around the JSON object and of a category
+ * outside the list (mapped to "other"; only the Anthropic path enforces the enum).
+ * On failure, `error` says why, with a snippet of the reply.
+ */
+export function parseAnalysis(text: string): { analysis: Analysis; error?: never } | { analysis: null; error: string } {
+  const fail = (why: string) => ({ analysis: null, error: `${why}: ${JSON.stringify(text.slice(0, 200))}` })
   const start = text.indexOf('{')
   const end = text.lastIndexOf('}')
-  if (start === -1 || end <= start) return null
+  if (start === -1 || end <= start) return fail('no JSON object')
+  let raw: unknown
   try {
-    const parsed = AnalysisSchema.safeParse(JSON.parse(text.slice(start, end + 1)))
-    return parsed.success ? parsed.data : null
-  } catch {
-    return null
+    raw = JSON.parse(text.slice(start, end + 1))
+  } catch (err) {
+    return fail(`invalid JSON (${(err as Error).message})`)
   }
+  if (raw && typeof raw === 'object') {
+    const category = String((raw as { category?: unknown }).category ?? '').trim().toLowerCase()
+    raw = { ...raw, category: (CATEGORIES as readonly string[]).includes(category) ? category : 'other' }
+  }
+  const parsed = AnalysisSchema.safeParse(raw)
+  if (parsed.success) return { analysis: parsed.data }
+  return fail(`schema mismatch (${parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ')})`)
 }
 
 export function formatEntries(entries: JournalEntry[]): string {

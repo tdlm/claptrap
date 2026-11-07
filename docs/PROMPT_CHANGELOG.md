@@ -4,6 +4,35 @@ Every change to Claptrap's requirements, newest first. The current full prompt l
 [PROMPT.md](PROMPT.md). Each entry records what was asked and what changed in the prompt,
 so any revision can be reconstructed.
 
+## Rev 9 — 2026-11-07 — Encrypted spool, retries and a regular-request fallback
+
+- Asked: "I'd rather not lose captures. I want this thing to be robust and recover from
+  lost sends." Chose: keep screenshots encrypted on disk until logged (over memory only),
+  and fall back to regular requests after 3 hours (over never, or after 1 hour).
+- Changed: screenshots are spooled encrypted with `safeStorage` from capture until their
+  entry is written (replacing "screenshots never touch disk"); failed, cancelled,
+  expired, refused or unparseable results are resent, up to 3 sends per capture; a batch
+  out for 3 hours has its remaining captures sent as regular requests and is cancelled;
+  the queue is rebuilt from the spool at launch, so quit no longer flushes; batches from
+  before the spool are dropped after 24 hours; the "Capture & send now" menu label now
+  shows its ampersand. README privacy section updated to match.
+
+## Rev 8 — 2026-11-07 — Slow batches no longer block the log; Gateway captures parse
+
+- Reported: "Sometimes Claptrap stops sending logs and then I open the window and it says
+  Queued 1 and Thinking of 94." Two causes: (1) only the oldest batch was polled, and
+  Gateway batches can stay pending for hours, so everything queued behind one; (2) the
+  capture prompt never listed the categories, so on the Gateway path the model made up
+  ones like "education", and zod rejected those replies silently. No entries had been
+  logged since 11-05.
+- Asked: "make the fix and unblock it".
+- Changed: poll every in-flight batch and commit each as soon as it finishes, inserting
+  lines into the note in time order; cancel and drop batches only after 24 hours; recaps
+  and summaries stop waiting on a batch after 3 hours; the capture prompt (`prompts.ts`)
+  lists the categories, and unknown ones map to `other`; every skipped result is logged
+  with its reason; the menu and settings window show the oldest batch's age and the last
+  status-check error.
+
 ## Rev 7 — 2026-10-07 — Makefile + stable signing
 
 - Reported: after rebuilding and moving the app to /Applications, it "can't see

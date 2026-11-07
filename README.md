@@ -100,8 +100,10 @@ of the file. A structured copy of every entry, used for the summaries, lives in
 
 ## Privacy
 
-- Screenshots are kept in memory only, until they're sent in the next batch (every 5 minutes
-  by default), then scrubbed. They're never written to disk.
+- Each screenshot is kept, encrypted with your Mac's Keychain, in
+  `~/Library/Application Support/Claptrap/spool/` only until its log entry is written
+  (usually minutes; at most a few hours if the AI provider is slow), then deleted. That's
+  what lets Claptrap resend a capture after a failed send, a quit or a crash.
 - Nothing is captured while you're idle, the screen is locked, Claptrap is napping
   (menu bar → Pause), or an excluded app is in front (1Password, Passwords, Keychain
   Access and Messages by default).

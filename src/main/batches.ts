@@ -11,6 +11,8 @@ export interface CaptureMeta {
   bundleId?: string
   windowTitle?: string
   url?: string
+  /** Sends already tried for this capture (batch or regular); it's given up on after a few. */
+  attempts?: number
 }
 
 export interface PendingBatch {
@@ -18,6 +20,8 @@ export interface PendingBatch {
   handle: string
   submittedAt: number
   items: CaptureMeta[]
+  /** Its screenshots are in the spool, so lost items can be resent. Unset on older batches. */
+  spooled?: boolean
 }
 
 // Persisted so results still land in the notes after a restart.

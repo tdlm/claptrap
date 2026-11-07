@@ -24,6 +24,10 @@ export interface AiProvider {
   submitCaptures(requests: CaptureRequest[]): Promise<string>
   batchState(handle: string): Promise<BatchState>
   batchResults(handle: string): AsyncIterable<CaptureResult>
+  /** Analyzes one capture with a regular (non-batch, full-price) request; the fallback for slow batches. */
+  analyzeCapture(request: CaptureRequest): Promise<CaptureResult>
+  /** Best-effort cancel of a batch we've given up on, so it isn't billed. */
+  cancelBatch(handle: string): Promise<void>
   /** Hourly recaps use the capture model; the day summary uses the summary model. */
   summarize(system: string, prompt: string, slot: keyof ModelChoice): Promise<string>
   listModels(): Promise<string[]>

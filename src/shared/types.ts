@@ -57,6 +57,10 @@ export interface Status {
   queued: number
   /** Screenshots sent in batches whose results haven't come back yet. */
   processing: number
+  /** Epoch ms the oldest in-flight batch was sent, or null when none are in flight. */
+  oldestBatchAt: number | null
+  /** Last batch status check error, cleared once a poll succeeds. */
+  batchError: string | null
   message: string
 }
 

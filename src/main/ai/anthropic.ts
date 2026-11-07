@@ -58,8 +58,19 @@ export function anthropicProvider(apiKey: string, models: ModelChoice): AiProvid
           continue
         }
         const text = result.message.content.flatMap((b) => (b.type === 'text' ? [b.text] : [])).join('')
-        yield { id: item.custom_id, analysis: parseAnalysis(text) }
+        yield { id: item.custom_id, ...parseAnalysis(text) }
       }
+    },
+
+    async analyzeCapture(request) {
+      const res = await client.messages.create(captureParams(request))
+      if (res.stop_reason === 'refusal') return { id: request.id, analysis: null, error: 'refused' }
+      const text = res.content.flatMap((b) => (b.type === 'text' ? [b.text] : [])).join('')
+      return { id: request.id, ...parseAnalysis(text) }
+    },
+
+    async cancelBatch(handle) {
+      await client.messages.batches.cancel(handle)
     },
 
     async summarize(system, prompt, slot) {

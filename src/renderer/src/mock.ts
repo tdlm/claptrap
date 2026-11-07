@@ -30,6 +30,8 @@ export function installMockApi(): void {
     lastCaptureAt: Date.now(),
     queued: 4,
     processing: 10,
+    oldestBatchAt: Date.now() - 47 * 60_000,
+    batchError: null,
     message: 'Observing! Documenting! Being incredibly helpful!'
   }
   const ok = async <T>(v: T) => v

@@ -39,16 +39,6 @@ if (!app.requestSingleInstanceLock()) {
     else if (!hasApiKey(settings.provider)) openWindow('settings')
   })
 
-  // Send any queued screenshots before quitting; they only live in memory.
-  let quitting = false
-  app.on('before-quit', (e) => {
-    if (quitting || !engine.hasUnsent()) return engine.stop()
-    e.preventDefault()
-    quitting = true
-    const timeout = new Promise((resolve) => setTimeout(resolve, 10_000))
-    void Promise.race([engine.flush(), timeout]).finally(() => {
-      engine.stop()
-      app.quit()
-    })
-  })
+  // Unsent captures are spooled on disk and picked up again at the next launch.
+  app.on('before-quit', () => engine.stop())
 }

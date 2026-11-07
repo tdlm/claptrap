@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { BATCH_OPTIONS, type BatchEvery, type ProviderId, type Settings, type SettingsView, type Status } from '@shared/types'
+import { slowBatchAge } from '@shared/format'
 import { pick, voice } from '@shared/voice'
 import { Eye, type EyeMood } from '../components/Eye'
 import { Button, Field, Plate, Toggle } from '../components/ui'
@@ -78,8 +79,10 @@ export function SettingsPage() {
           {status && (status.queued > 0 || status.processing > 0) && (
             <p className="last">
               Queued: {status.queued} · In the batch oven: {status.processing}
+              {slowBatchAge(status.oldestBatchAt) && ` · oldest sent ${slowBatchAge(status.oldestBatchAt)} ago`}
             </p>
           )}
+          {status?.batchError && <p className="last">Batch check failed: {status.batchError}</p>}
         </div>
       </header>
 

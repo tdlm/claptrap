@@ -37,9 +37,25 @@ function ensureNote(day: string): string {
 
 const oneLine = (s: string) => s.replace(/\s+/g, ' ').trim()
 
+const ENTRY_TIME = /^- \*\*(\d\d:\d\d)\*\*/
+
+/**
+ * Adds a log line in time order. Batches can finish out of order, so a late entry goes
+ * before the first later one instead of at the end.
+ */
 export function appendEntry(e: JournalEntry): void {
   const details = e.details ? ` — ${oneLine(e.details)}` : ''
-  fs.appendFileSync(ensureNote(dayKey(e.ts)), `- **${hhmm(e.ts)}** ${oneLine(e.activity)}${details} · _${oneLine(e.app)}_\n`)
+  const time = hhmm(e.ts)
+  const line = `- **${time}** ${oneLine(e.activity)}${details} · _${oneLine(e.app)}_`
+  const file = ensureNote(dayKey(e.ts))
+  const lines = fs.readFileSync(file, 'utf8').split('\n')
+  const later = lines.findIndex((l) => (l.match(ENTRY_TIME)?.[1] ?? '') > time)
+  if (later === -1) {
+    fs.appendFileSync(file, `${line}\n`)
+  } else {
+    lines.splice(later, 0, line)
+    fs.writeFileSync(file, lines.join('\n'))
+  }
 }
 
 export function appendHourlyRecap(day: string, label: string, text: string): void {
@@ -81,6 +97,7 @@ export function readJournal(day: string): JournalEntry[] {
       .split('\n')
       .filter(Boolean)
       .map((line) => JSON.parse(line) as JournalEntry)
+      .sort((a, b) => a.ts - b.ts) // batches can land out of order
   } catch {
     return []
   }

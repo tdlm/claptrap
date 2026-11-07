@@ -1,6 +1,7 @@
 import { app, Menu, nativeImage, shell, Tray, type MenuItemConstructorOptions } from 'electron'
 import fs from 'node:fs'
 import path from 'node:path'
+import { slowBatchAge } from '@shared/format'
 import type { RunState, Status } from '@shared/types'
 import { engine } from './engine'
 import { dayKey, notePath } from './notes'
@@ -54,6 +55,7 @@ const truncate = (s: string, n = 60) => (s.length > n ? `${s.slice(0, n - 1)}…
 
 function buildMenu(status: Status): Menu {
   const paused = status.state === 'paused'
+  const oldest = slowBatchAge(status.oldestBatchAt)
   const pauseItems: MenuItemConstructorOptions[] = [
     { label: 'Nap for 15 minutes', click: () => engine.pause(15 * 60_000) },
     { label: 'Nap for 1 hour', click: () => engine.pause(60 * 60_000) },
@@ -68,13 +70,14 @@ function buildMenu(status: Status): Menu {
     { label: truncate(status.message), enabled: false },
     ...(status.lastEntry ? [{ label: `Last: ${truncate(status.lastEntry)}`, enabled: false }] : []),
     ...(status.queued || status.processing
-      ? [{ label: `Queued ${status.queued} · Thinking about ${status.processing}`, enabled: false }]
+      ? [{ label: `Queued ${status.queued} · Thinking about ${status.processing}${oldest ? ` (oldest ${oldest})` : ''}`, enabled: false }]
       : []),
+    ...(status.batchError ? [{ label: `Batch check failed: ${truncate(status.batchError)}`, enabled: false }] : []),
     { type: 'separator' },
     paused
       ? { label: 'Wake up!', click: () => engine.resume() }
       : { label: 'Pause', submenu: pauseItems },
-    { label: 'Capture & send now', enabled: !paused, click: () => void engine.captureNow() },
+    { label: 'Capture && send now', enabled: !paused, click: () => void engine.captureNow() },
     { type: 'separator' },
     {
       label: "Open today's notes",
