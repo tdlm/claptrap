@@ -49,7 +49,7 @@ else
 	@echo "✓ Signed with \"$(IDENTITY)\"."
 endif
 
-quit: ## Quit the running app gracefully (sends any queued screenshots first)
+quit: ## Quit the running app (force-quits after 15 s; unsent captures stay spooled)
 	@if pgrep -xq "$(APP_NAME)"; then \
 		osascript -e 'quit app "$(APP_NAME)"' >/dev/null 2>&1 || true; \
 		for i in $$(seq 1 30); do pgrep -xq "$(APP_NAME)" || break; sleep 0.5; done; \

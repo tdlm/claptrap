@@ -178,8 +178,9 @@ Totally saved!". Keep the voice lines in one shared module.
   `allowBuilds` runs only esbuild's install script; get-windows and electron-winstaller
   scripts are Windows-only and stay off. Electron's binary is fetched by `make setup`.
 - A **Makefile** as the main entry point: `setup`, `dev`, `typecheck`, `build`, `icons`,
-  `dist` (package + sign), `quit` (graceful, so queued screenshots get sent), `install`
-  (replace `/Applications/Claptrap.app`), `open`, `app` (dist + install + open), `cert`
+  `dist` (package + sign), `quit` (graceful, force-quit after 15 s; unsent captures stay
+  spooled for the next launch), `install` (replace `/Applications/Claptrap.app`), `open`,
+  `app` (dist + install + open), `cert`
   (create a self-signed "Claptrap Dev" code signing certificate in the login keychain,
   trusted for code signing), `reset-permissions` (`tccutil reset` for Screen Recording
   and Accessibility), `status`, `clean`. Sign with that certificate via
