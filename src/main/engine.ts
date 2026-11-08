@@ -285,9 +285,21 @@ class Engine extends EventEmitter<{ status: [Status] }> {
   /** Writes a capture's entry, unless it's already been logged. */
   private commitCapture(meta: CaptureMeta, analysis: Analysis, legacy: boolean): void {
     if (!legacy && !spoolHas(meta.id)) return
-    const { id, attempts: _attempts, ...rest } = meta
-    this.commit({ ...analysis, ...rest })
-    spoolDelete(id)
+    // Only set metadata fields that were captured: a missing frontmost app must not
+    // overwrite the app the model read off the screen.
+    const entry: JournalEntry = { ...analysis, ts: meta.ts, app: meta.app || analysis.app || 'Unknown app' }
+    if (meta.bundleId) entry.bundleId = meta.bundleId
+    if (meta.windowTitle) entry.windowTitle = meta.windowTitle
+    if (meta.url) entry.url = meta.url
+    try {
+      this.commit(entry)
+    } catch (err) {
+      // One bad entry mustn't fail the rest of its batch on every poll.
+      console.error(`[claptrap] could not write capture ${meta.id}:`, err)
+      this.retry([meta], `could not write entry: ${(err as Error).message}`)
+      return
+    }
+    spoolDelete(meta.id)
   }
 
   private flushing = false

@@ -35,7 +35,7 @@ function ensureNote(day: string): string {
   return file
 }
 
-const oneLine = (s: string) => s.replace(/\s+/g, ' ').trim()
+const oneLine = (s: string | undefined) => (s ?? '').replace(/\s+/g, ' ').trim()
 
 const ENTRY_TIME = /^- \*\*(\d\d:\d\d)\*\*/
 
